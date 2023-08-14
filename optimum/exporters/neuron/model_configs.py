@@ -374,3 +374,9 @@ class GPT2NeuronConfig(TextNeuronDecoderConfig):
 class LLamaNeuronConfig(TextNeuronDecoderConfig):
     NEURONX_ARGS = ["n_positions"]
     NEURONX_CLASS = "llama.model.LlamaForSampling"
+
+
+@register_in_tasks_manager("gpt_neox", "text-generation")
+class GPTNeoxNeuronConfig(TextNeuronDecoderConfig):
+    NEURONX_ARGS = ["n_positions"]
+    NEURONX_CLASS = "gptneox.model.GPTNeoXForSampling"
