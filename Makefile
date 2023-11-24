@@ -70,6 +70,19 @@ build_dist: ${PACKAGE_DIST} ${PACKAGE_WHEEL}
 pypi_upload: ${PACKAGE_DIST} ${PACKAGE_WHEEL}
 	python -m twine upload ${PACKAGE_DIST} ${PACKAGE_WHEEL}
 
+# Tests
+
 test_installs:
 	python -m pip install .[tests]
 	python -m pip install git+https://github.com/huggingface/transformers.git
+
+# Stand-alone TGI server for unit tests outside of TGI container
+ tgi_server:
+	python -m pip install -r text-generation-inference/server/build-requirements.txt
+	make -C text-generation-inference/server gen-server
+
+test_tgi: tgi_server
+	python -m pip install .[neuronx]
+	find text-generation-inference -name "text_generation_server-$(VERSION)-py3-none-any.whl" \
+	                               -exec python -m pip install --force-reinstall {} \;
+	python -m pytest -s tests/tgi
